@@ -21,4 +21,14 @@ class AdvertController extends Controller
 
         return new Response($content);
     }
+
+    public function viewAction($id)
+    {
+        return new Response("Affichage de l'annonce d'id : ".$id);
+    }
+
+    public function viewSlugAction($year, $slug, $format)
+    {
+        return new Response("on pourrait afficher l'annonce correspondant au slug '".$slug."',créée en ".$year." et au format ".$format.".");
+    }
 }
