@@ -4,7 +4,9 @@
 
 namespace OC\PlatformBundle\Controller;
 
+use OC\PlatformBundle\Entity\Advert;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -58,13 +60,16 @@ class AdvertController extends Controller
 
   public function viewAction($id)
   {
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
+      //Model 1
+      //$repository = $this->getDoctrine()->getManager()->getRepository('OCPlatformBundle:Advert');
+      //$advert = $repository->find($id);
+
+      //Model2
+      $advert = $this->getDoctrine()->getManager()->find('OCPlatformBundle:Advert', $id);
+
+      if(null === $advert){
+          throw new NotFoundHttpException("L'annonce d'id ".$id."n'existe pas. ");
+      }
 
     return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
       'advert' => $advert
@@ -73,16 +78,26 @@ class AdvertController extends Controller
 
   public function addAction(Request $request)
   {
-    // Si la requête est en POST, c'est que le visiteur a soumis le formulaire
-    if ($request->isMethod('POST')) {
-      $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+    $advert = new Advert();
 
-      // Puis on redirige vers la page de visualisation de cettte annonce
-      return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+    $advert->setTitle('Recherche developeur Symfony');
+    $advert ->setAuthor('Behnoush');
+    $advert->setContent('Nous recherchons un développeur symfony débutant sur lyon.');
+    $advert->setDate(new \DateTime("now"));
+    $advert->setPublished(1);
+
+    $em = $this->getDoctrine()->getManager();
+
+    $em->persist($advert);
+    $em->flush();
+
+    if($request->isMethod('POST')){
+        $request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
+
+        return $this->redirectToRoute('oc_platform_view', ['id'=>$advert->getId()]);
     }
 
-    // Si on n'est pas en POST, alors on affiche le formulaire
-    return $this->render('OCPlatformBundle:Advert:add.html.twig');
+    return $this->render('OCPlatformBundle:Advert:add.html.twig', ['advert'=>$advert]);
   }
 
   public function editAction($id, Request $request)
