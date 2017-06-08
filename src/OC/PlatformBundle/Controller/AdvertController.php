@@ -5,9 +5,10 @@
 namespace OC\PlatformBundle\Controller;
 
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Entity\Image;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AdvertController extends Controller
@@ -86,6 +87,12 @@ class AdvertController extends Controller
     $advert->setDate(new \DateTime("now"));
     $advert->setPublished(1);
 
+    $image = new Image();
+    $image->setUrl('http://www.geronimo-agency.com/wp-content/uploads/2016/02/Developper-application-mobile-m-commerce-790x500.jpg');
+    $image->setAlt('developer');
+
+    $advert->setImage($image);
+
     $em = $this->getDoctrine()->getManager();
 
     $em->persist($advert);
@@ -100,25 +107,16 @@ class AdvertController extends Controller
     return $this->render('OCPlatformBundle:Advert:add.html.twig', ['advert'=>$advert]);
   }
 
-  public function editAction($id, Request $request)
+  public function editAction($id)
   {
-    if ($request->isMethod('POST')) {
-      $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
 
-      return $this->redirectToRoute('oc_platform_view', array('id' => 5));
-    }
+    $em = $this->getDoctrine()->getManager();
+    $advert = $em->find('OCPlatformBundle:Advert', $id);
+    $advert->getImage()->setUrl('https://www.prestaconcept.net/medias/content/media/Symfony-logo_20160808115724.png');
 
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
+    $em->flush();
 
-    return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
-      'advert' => $advert
-    ));
+    return new Response('OK');
   }
 
   public function deleteAction($id)
