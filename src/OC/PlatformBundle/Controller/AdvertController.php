@@ -35,8 +35,21 @@ class AdvertController extends Controller
         'id'      => 3,
         'author'  => 'Mathieu',
         'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
+        'date'    => new \Datetime()),
+      array(
+        'title'   => 'Offre de stage webdesigner',
+        'id'      => 4,
+        'author'  => 'Mathieu',
+        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
+        'date'    => new \Datetime()),
+      array(
+        'title'   => 'Offre de stage webdesigner',
+        'id'      => 5,
+        'author'  => 'Mathieu',
+        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
         'date'    => new \Datetime())
     );
+
 
     return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
       'listAdverts' => $listAdverts,

@@ -1,0 +1,7 @@
+services:
+    bn_core.services:
+        class: BN\CoreBundle\Services\Annonce
+        arguments:
+            - "@oc_platform.antispam"
+
+

@@ -1,0 +1,14 @@
+{% extends "BNCoreBundle::layout.html.twig" %}
+
+
+{% block body%}
+
+    <h2> les 3 dernières annonces</h2>
+    {{ render(controller('OCPlatformBundle:Advert:menu',{'limit':3})) }}
+<hr>
+    {% for message in app.session.flashBag.get('info') %}
+       <p class="bg-info" style="padding:15px">Message Flash : {{ message }}  </p>
+     {% endfor %}
+
+    <a href="{{ path('bn_core_contact') }}" class="btn btn-primary btn-lg btn-bloc" name="contact">CONTACT NOUS</a>
+{% endblock %}
