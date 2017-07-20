@@ -65,11 +65,17 @@ class Advert
      */
     private $categories;
 
+    /**
+    * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
+    */
+    private $applications;
+
     public function __construct()
     {
         // Par défaut, la date de l'annonce est la date d'aujourd'hui
         $this->date       = new \Datetime();
         $this->categories = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     /**
@@ -200,5 +206,45 @@ class Advert
     public function removeCategory(Category $category)
     {
         $this->categories->removeElement($category);
+    }
+
+    /**
+     * Add application
+     *
+     * @param Application $application
+     *
+     * @return Advert
+     */
+    public function addApplication(Application $application)
+    {
+        $this->applications[] = $application;
+
+        $application->setAdvert($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove application
+     *
+     * @param Application $application
+     */
+    public function removeApplication(Application $application)
+    {
+        $this->applications->removeElement($application);
+
+        // Et si notre relation était facultative (nullable=true, ce qui n'est pas notre cas ici attention) :
+
+        // $application->setAdvert(null);
+    }
+
+    /**
+     * Get applications
+     *
+     * @return Collection
+     */
+    public function getApplications()
+    {
+        return $this->applications;
     }
 }
