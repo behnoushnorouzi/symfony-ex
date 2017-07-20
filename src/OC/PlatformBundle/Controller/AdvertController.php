@@ -230,4 +230,17 @@ class AdvertController extends Controller
             'listAdverts' => $listAdverts,
         ));
     }
+
+    public function listAction()
+    {
+        $listAdverts = $this
+                        ->getDoctrine()
+                        ->getManager()
+                        ->getRepository('OCPlatformBundle:Advert')
+                        ->getAdvertWithApplication();
+
+        foreach ($listAdverts as $advert) {
+            $advert->getApplication();
+        }
+    }
 }
