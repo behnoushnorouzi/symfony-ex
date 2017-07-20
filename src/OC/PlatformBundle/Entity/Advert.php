@@ -5,7 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="oc_advert")
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\AdvertRepository")
  */
 class Advert
@@ -69,6 +69,16 @@ class Advert
     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert")
     */
     private $applications;
+
+    /**
+   * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+   */
+   private $updatedAt;
+
+   /**
+   * @ORM\Column(name="nb_applications", type="integer")
+   */
+   private $nbApplications = 0;
 
     public function __construct()
     {
@@ -247,4 +257,32 @@ class Advert
     {
         return $this->applications;
     }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+    /**
+    * @ORM\PreUpdate
+    */
+
+    public function updateDate()
+    {
+      $this->setUpdatedAt(new \DateTime());
+   }
+
+   public function increaseApplication()
+   {
+    $this->nbApplications++;
+   }
+
+  public function decreaseApplication()
+  {
+    $this->nbApplications--;
+  }
 }
